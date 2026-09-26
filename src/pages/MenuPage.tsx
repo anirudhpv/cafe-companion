@@ -116,27 +116,40 @@ export const MenuPage: React.FC = () => {
               className="group cursor-pointer border border-zinc-200 bg-white p-4 transition-all hover:border-zinc-900 flex flex-col justify-between"
             >
               <div>
-                {/* Header row */}
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div>
-                    <div className="flex items-center gap-2">
+                {/* Header row with thumbnail */}
+                <div className="flex gap-3 mb-3">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="h-20 w-20 object-cover border border-zinc-200 shrink-0 bg-zinc-100"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
                       <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest">
                         {item.category}
                       </span>
-                      {item.menuDisplayName && item.menuDisplayName !== item.name && (
-                        <span className="font-mono text-[10px] text-zinc-400">
-                          (Board: "{item.menuDisplayName}")
-                        </span>
-                      )}
+                      <span className="font-mono text-[10px] text-zinc-500 border border-zinc-200 px-1.5 py-0.2">
+                        {item.price}
+                      </span>
                     </div>
-                    <h2 className="text-base font-semibold text-zinc-900 tracking-tight group-hover:underline">
+                    <h2 className="text-base font-semibold text-zinc-900 tracking-tight group-hover:underline truncate">
                       {item.name}
                     </h2>
+                    {item.menuDisplayName && item.menuDisplayName !== item.name && (
+                      <div className="font-mono text-[10px] text-zinc-400 truncate">
+                        Board: "{item.menuDisplayName}"
+                      </div>
+                    )}
+                    {item.pronunciation && (
+                      <button
+                        onClick={(e) => playPronunciation(e, item.name)}
+                        className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-500 hover:text-zinc-900 mt-0.5"
+                      >
+                        <Volume2 className="h-3 w-3 text-zinc-400" />
+                        <span>/{item.pronunciation}/</span>
+                      </button>
+                    )}
                   </div>
-
-                  <span className="font-mono text-xs text-zinc-500 border border-zinc-200 px-2 py-0.5">
-                    {item.price}
-                  </span>
                 </div>
 
                 {/* Pronunciation & Description */}

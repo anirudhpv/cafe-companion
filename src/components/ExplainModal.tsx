@@ -72,6 +72,15 @@ export const ExplainModal: React.FC<ExplainModalProps> = ({ item, onClose }) => 
 
         {/* Modal Content */}
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          {/* Header Image */}
+          <div className="h-44 w-full border border-zinc-200 overflow-hidden bg-zinc-100">
+            <img
+              src={item.image}
+              alt={item.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
           {/* Header Details */}
           <div>
             <div className="flex items-baseline justify-between">
