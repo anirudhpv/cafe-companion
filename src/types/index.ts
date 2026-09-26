@@ -1,7 +1,8 @@
 export interface MenuItem {
   id: string;
   name: string;
-  category: 'Coffee' | 'Specialty' | 'Tea & Coolers' | 'Bakery & Bites';
+  menuDisplayName?: string;
+  category: 'Hot Brew' | 'Cold Brew' | 'Sandwich' | 'Pancake' | 'Shareable Bites';
   pronunciation?: string;
   tagline: string;
   price: string;

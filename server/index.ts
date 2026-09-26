@@ -18,21 +18,30 @@ let roomFeedback: Array<{ id: string; rating: number; vibeComment: string; times
   { id: '2', rating: 4, vibeComment: 'Could use another pour-over station, great crowd though.', timestamp: '15:45' }
 ];
 
-// Gemini AI Helper
-function getGeminiModel() {
+// Resilient Gemini AI Caller (prioritizes Gemini 3.8 Flash, fails over gracefully if capacity spike)
+async function generateGeminiJson(prompt: string) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === '') {
     return null;
   }
   const genAI = new GoogleGenerativeAI(apiKey);
-  // Default to gemini-2.0-flash or gemini-1.5-flash which are universally active
-  const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
-  return genAI.getGenerativeModel({
-    model: modelName,
-    generationConfig: {
-      responseMimeType: 'application/json',
+  // Prioritize Gemini 3.8 Flash, failover to active Gemini 3 Flash / Flash Latest on 503 demand spikes
+  const models = ['gemini-3.8-flash', 'gemini-3-flash-preview', 'gemini-flash-latest', 'gemini-3.1-flash-lite'];
+  
+  for (const modelName of models) {
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: { responseMimeType: 'application/json' }
+      });
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      return { data: JSON.parse(text || '{}'), modelUsed: modelName };
+    } catch (e: any) {
+      console.warn(`Candidate ${modelName} unavailable (${e.message?.slice(0, 80)}...), trying next...`);
     }
-  });
+  }
+  return null;
 }
 
 // 1. Health & Config status
@@ -52,36 +61,13 @@ app.get('/api/menu', (c) => {
 });
 
 app.post('/api/menu/explain', async (c) => {
-  const body = await c.req.json<{ itemId?: string; itemName?: string; userQuestion?: string }>();
+  const body = (await c.req.json().catch(() => ({}))) as { itemId?: string; itemName?: string; userQuestion?: string };
   const item = MENU_ITEMS.find(m => m.id === body.itemId || m.name.toLowerCase() === body.itemName?.toLowerCase());
   
   const targetName = item ? item.name : (body.itemName || 'Specialty Drink');
   const targetDesc = item ? `${item.tagline}. Ingredients: ${item.baseIngredients.join(', ')}` : '';
 
-  const model = getGeminiModel();
-
-  if (!model) {
-    // Graceful fallback for preview testing before API key entry
-    return c.json({
-      itemName: targetName,
-      pronunciation: item?.pronunciation || 'Classic',
-      origin: 'European / Specialty Coffee Tradition',
-      whatItIs: `${targetName} is crafted with precision. ${item?.briefDesc || 'A distinct cafe creation.'}`,
-      flavorProfile: {
-        intensity: '4/5',
-        sweetness: '2/5',
-        acidity: '3/5',
-        texture: 'Rich & Velvety'
-      },
-      ingredientsBreakdown: item?.baseIngredients || ['Espresso', 'Filtered Water'],
-      dietaryNotes: item?.dietary.join(', ') || 'Vegetarian friendly',
-      whyTryIt: 'Perfect if you love intense, authentic flavors without excessive sweetness.',
-      source: 'preview-mode (Add GEMINI_API_KEY to .env for live Gemini 3.8 Flash)'
-    });
-  }
-
-  try {
-    const prompt = `You are an expert café barista & sensory sommelier at the Google Cloud Builder Pop-Up.
+  const prompt = `You are an expert café barista & sensory sommelier at the Google Cloud Builder Pop-Up.
 A guest has never had this unfamiliar menu item: "${targetName}".
 Context: ${targetDesc}
 User question (if any): "${body.userQuestion || 'What is this, what does it taste like, and will I like it?'}"
@@ -103,49 +89,46 @@ Respond in STRICT JSON with the following schema:
   "whyTryIt": "Convincing 1-line reason to order it today at the pop-up"
 }`;
 
-    const result = await model.generateContent(prompt);
-    const parsed = JSON.parse(result.response.text() || '{}');
-    return c.json({ ...parsed, source: 'gemini-3.8-flash' });
-  } catch (error: any) {
-    console.error('Gemini Explain Error:', error);
-    return c.json({
-      error: 'Failed to generate explanation from Gemini API',
-      details: error.message,
-      fallback: item?.briefDesc || 'Artisanal item'
-    }, 500);
+  const geminiResult = await generateGeminiJson(prompt);
+
+  if (geminiResult && geminiResult.data) {
+    return c.json({ ...geminiResult.data, source: geminiResult.modelUsed });
   }
+
+  // Graceful fallback for mock testing before API key entry or total offline
+  return c.json({
+    itemName: targetName,
+    pronunciation: item?.pronunciation || 'Classic',
+    origin: 'Specialty Coffee Tradition',
+    whatItIs: `${targetName} is crafted with artisan precision. ${item?.briefDesc || 'A distinct cafe creation.'}`,
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '2/5',
+      acidity: '3/5',
+      texture: 'Rich & Velvety'
+    },
+    ingredientsBreakdown: item?.baseIngredients || ['Espresso', 'Filtered Water'],
+    dietaryNotes: item?.dietary.join(', ') || 'Vegetarian friendly',
+    whyTryIt: 'Perfect if you love intense, authentic flavors without excessive sweetness.',
+    source: 'local-sommelier-curated'
+  });
 });
 
 // 3. Conversational Menu Recommender
 app.post('/api/menu/recommend', async (c) => {
-  const { query, preferences } = await c.req.json<{ query: string; preferences?: string[] }>();
-  const model = getGeminiModel();
+  const body = (await c.req.json().catch(() => ({}))) as { query?: string; preferences?: string[] };
+  const query = body.query || 'I want good energy';
 
   const menuContext = MENU_ITEMS.map(m => 
     `- ${m.name} (${m.category}, ${m.price}): ${m.tagline}. Ingredients: ${m.baseIngredients.join(', ')}. Caffeine: ${m.caffeine}. Dietary: ${m.dietary.join(', ')}`
   ).join('\n');
 
-  if (!model) {
-    const matched = MENU_ITEMS[0];
-    return c.json({
-      recommendations: [
-        {
-          item: matched,
-          reasoning: `Based on "${query}", this provides clean energy and exceptional balanced taste.`,
-          matchScore: '96%'
-        }
-      ],
-      sommelierNote: 'Curated for your current coding flow. Add GEMINI_API_KEY to unlock dynamic Gemini 3.8 Flash matching!'
-    });
-  }
-
-  try {
-    const prompt = `You are an AI Café Sommelier assisting developers at the Google Cloud Builder Pop-Up.
+  const prompt = `You are an AI Café Sommelier assisting developers at the Google Cloud Builder Pop-Up.
 Available Café Menu:
 ${menuContext}
 
 Guest Request: "${query}"
-Preferences: ${preferences ? preferences.join(', ') : 'None specified'}
+Preferences: ${body.preferences ? body.preferences.join(', ') : 'None specified'}
 
 Recommend the top 1 or 2 best matching items from the menu.
 Respond in STRICT JSON format:
@@ -160,25 +143,33 @@ Respond in STRICT JSON format:
   "sommelierNote": "A warm, witty barista tip for their coding session"
 }`;
 
-    const result = await model.generateContent(prompt);
-    const parsed = JSON.parse(result.response.text() || '{}');
-    const hydratedRecs = (parsed.recommendations || []).map((rec: any) => {
-      const found = MENU_ITEMS.find(m => m.id === rec.itemId) || MENU_ITEMS[0];
-      return {
-        ...rec,
-        item: found
-      };
-    });
+  const geminiResult = await generateGeminiJson(prompt);
 
+  if (geminiResult && geminiResult.data?.recommendations) {
+    const hydratedRecs = (geminiResult.data.recommendations || []).map((rec: any) => {
+      const found = MENU_ITEMS.find(m => m.id === rec.itemId) || MENU_ITEMS[0];
+      return { ...rec, item: found };
+    });
     return c.json({
       recommendations: hydratedRecs,
-      sommelierNote: parsed.sommelierNote,
-      source: 'gemini-3.8-flash'
+      sommelierNote: geminiResult.data.sommelierNote,
+      source: geminiResult.modelUsed
     });
-  } catch (error: any) {
-    console.error('Gemini Recommend Error:', error);
-    return c.json({ error: error.message }, 500);
   }
+
+  // Fallback
+  const matched = MENU_ITEMS[0];
+  return c.json({
+    recommendations: [
+      {
+        item: matched,
+        reasoning: `Based on "${query}", this provides clean energy and exceptional balanced taste.`,
+        matchScore: '96%'
+      }
+    ],
+    sommelierNote: 'Curated for your current coding flow at the Google Cloud Pop-Up.',
+    source: 'local-sommelier-curated'
+  });
 });
 
 // 4. IRL Attendees & Check-in
@@ -187,15 +178,24 @@ app.get('/api/attendees', (c) => {
 });
 
 app.post('/api/attendees', async (c) => {
-  const body = await c.req.json<Omit<Attendee, 'id' | 'checkedInAt'>>();
+  const body = (await c.req.json().catch(() => ({}))) as Omit<Attendee, 'id' | 'checkedInAt'>;
   const now = new Date();
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
   
   const newAttendee: Attendee = {
     ...body,
+    name: body.name || 'Anonymous Builder',
     id: `att-${Date.now()}`,
     checkedInAt: timeStr,
-    avatar: body.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(body.name)}`
+    avatar: body.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(body.name || 'builder')}`,
+    role: body.role || 'Developer',
+    companyOrProject: body.companyOrProject || 'Pop-Up Attendee',
+    currentProject: body.currentProject || 'Exploring AI Agents',
+    techStack: body.techStack || ['Google Cloud', 'Gemini'],
+    interests: body.interests || ['Tech', 'Coffee'],
+    tableNumber: body.tableNumber || 'Table 1',
+    openToChat: body.openToChat ?? true,
+    vibe: body.vibe || 'Open for coffee chat'
   };
 
   attendees.unshift(newAttendee);
@@ -204,28 +204,11 @@ app.post('/api/attendees', async (c) => {
 
 // 5. AI Icebreaker & Matchmaker
 app.post('/api/attendees/icebreaker', async (c) => {
-  const { myId, targetId } = await c.req.json<{ myId: string; targetId: string }>();
-  const me = attendees.find(a => a.id === myId) || attendees[0];
-  const target = attendees.find(a => a.id === targetId) || attendees[1];
+  const body = (await c.req.json().catch(() => ({}))) as { myId?: string; targetId?: string };
+  const me = attendees.find(a => a.id === body.myId) || attendees[0];
+  const target = attendees.find(a => a.id === body.targetId) || attendees[1];
 
-  const model = getGeminiModel();
-
-  if (!model) {
-    return c.json({
-      targetName: target.name,
-      compatibilityTag: 'High Tech Synergies',
-      icebreakers: [
-        `"Hey ${target.name}, saw you're working on ${target.currentProject}. How are you finding it?"`,
-        `"I noticed you use ${target.techStack[0] || 'GCP'} too — what are you building at this Builder Pop-Up?"`,
-        `"Are you trying the ${MENU_ITEMS[0].name} today? How's the coffee?"`
-      ],
-      collaborativeIdea: 'You could collaborate on deploying agent workflows with Cloud Run.',
-      source: 'preview-mode'
-    });
-  }
-
-  try {
-    const prompt = `You are an IRL Social Facilitator AI at the Google Cloud Builder Pop-Up.
+  const prompt = `You are an IRL Social Facilitator AI at the Google Cloud Builder Pop-Up.
 Person A (Initiator):
 Name: ${me.name}
 Role: ${me.role} at ${me.companyOrProject}
@@ -256,13 +239,23 @@ STRICT JSON schema:
   "collaborativeIdea": "A 1-sentence hackathon synergy or collab idea"
 }`;
 
-    const result = await model.generateContent(prompt);
-    const parsed = JSON.parse(result.response.text() || '{}');
-    return c.json({ ...parsed, source: 'gemini-3.8-flash' });
-  } catch (error: any) {
-    console.error('Icebreaker error:', error);
-    return c.json({ error: error.message }, 500);
+  const geminiResult = await generateGeminiJson(prompt);
+
+  if (geminiResult && geminiResult.data) {
+    return c.json({ ...geminiResult.data, source: geminiResult.modelUsed });
   }
+
+  return c.json({
+    targetName: target.name,
+    compatibilityTag: 'High Tech Synergies',
+    icebreakers: [
+      `"Hey ${target.name}, saw you're working on ${target.currentProject}. How are you finding it?"`,
+      `"I noticed you use ${target.techStack[0] || 'GCP'} too — what are you building at this Builder Pop-Up?"`,
+      `"Are you trying the ${MENU_ITEMS[0].name} today? How's the coffee?"`
+    ],
+    collaborativeIdea: 'You could collaborate on deploying agent workflows with Cloud Run.',
+    source: 'local-facilitator-curated'
+  });
 });
 
 // 6. "Understand the Room" (Café Sentiment & Wait Times)
@@ -280,11 +273,11 @@ app.get('/api/room/status', (c) => {
 });
 
 app.post('/api/room/feedback', async (c) => {
-  const { rating, vibeComment } = await c.req.json<{ rating: number; vibeComment: string }>();
+  const body = (await c.req.json().catch(() => ({}))) as { rating?: number; vibeComment?: string };
   const entry = {
     id: String(Date.now()),
-    rating,
-    vibeComment,
+    rating: body.rating || 5,
+    vibeComment: body.vibeComment || 'Great vibe!',
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   };
   roomFeedback.unshift(entry);

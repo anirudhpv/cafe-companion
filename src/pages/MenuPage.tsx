@@ -25,7 +25,7 @@ export const MenuPage: React.FC = () => {
       });
   }, []);
 
-  const categories = ['All', 'Coffee', 'Specialty', 'Tea & Coolers', 'Bakery & Bites'];
+  const categories = ['All', 'Hot Brew', 'Cold Brew', 'Sandwich', 'Pancake', 'Shareable Bites'];
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -152,9 +152,15 @@ export const MenuPage: React.FC = () => {
                       {item.name}
                     </h3>
                   </div>
+
+                  {item.menuDisplayName && item.menuDisplayName !== item.name && (
+                    <div className="text-[10px] text-gray-400 font-mono">
+                      Board: {item.menuDisplayName}
+                    </div>
+                  )}
                   
                   {item.pronunciation && (
-                    <span className="text-[11px] font-mono text-gray-400">
+                    <span className="text-[11px] font-mono text-gray-400 block">
                       "{item.pronunciation}"
                     </span>
                   )}

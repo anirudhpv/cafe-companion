@@ -1,7 +1,8 @@
 export interface MenuItem {
   id: string;
   name: string;
-  category: 'Coffee' | 'Specialty' | 'Tea & Coolers' | 'Bakery & Bites';
+  menuDisplayName?: string; // Preserve exact text from cafe menu board
+  category: 'Hot Brew' | 'Cold Brew' | 'Sandwich' | 'Pancake' | 'Shareable Bites';
   pronunciation?: string;
   tagline: string;
   price: string;
@@ -9,121 +10,190 @@ export interface MenuItem {
   caffeine: 'High' | 'Medium' | 'Low' | 'Zero';
   image: string;
   baseIngredients: string[];
-  isUnfamiliar: boolean; // Flagged to highlight for users who haven't had it before
+  isUnfamiliar: boolean;
   briefDesc: string;
 }
 
 export const MENU_ITEMS: MenuItem[] = [
+  // --- HOT BREW ---
   {
-    id: 'cortado',
-    name: 'Cortado',
-    category: 'Coffee',
-    pronunciation: 'kor-TAH-doh',
-    tagline: 'Equal parts bold espresso and velvety steamed milk',
-    price: '₹240',
-    dietary: ['Vegetarian', 'Gluten-Free'],
-    caffeine: 'High',
-    image: 'https://images.unsplash.com/photo-1534778101976-62847782c213?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Double Ristretto Espresso', 'Steamed Whole Milk (1:1 ratio)'],
-    isUnfamiliar: true,
-    briefDesc: 'Spanish-origin drink where the warm milk "cuts" (cortar) espresso acidity without diluting its punch like a latte does.',
-  },
-  {
-    id: 'affogato',
-    name: 'Affogato al Caffè',
-    category: 'Specialty',
-    pronunciation: 'ah-foh-GAH-toh',
-    tagline: 'Hot espresso poured over artisanal vanilla gelato',
-    price: '₹280',
+    id: 'cappuccino',
+    name: 'Cappuccino',
+    category: 'Hot Brew',
+    pronunciation: 'kap-oo-CHEE-noh',
+    tagline: 'Classic Italian espresso topped with equal parts steamed milk & dense velvety foam',
+    price: 'Included',
     dietary: ['Vegetarian'],
-    caffeine: 'Medium',
-    image: 'https://images.unsplash.com/photo-1592663527359-cf6642f54cff?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Single Origin Espresso', 'Madagascar Vanilla Bean Gelato'],
-    isUnfamiliar: true,
-    briefDesc: 'Italian dessert-coffee hybrid: "affogato" means drowned. Contrast of scorching bitter espresso melting cold sweet gelato.',
+    caffeine: 'High',
+    image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Espresso (1/3)', 'Steamed Milk (1/3)', 'Milk Foam (1/3)'],
+    isUnfamiliar: false,
+    briefDesc: 'Rich, comforting classic with a thick aerated milk foam layer dusting the top.'
   },
   {
-    id: 'matcha-tonic',
-    name: 'Iced Yuzu Matcha Tonic',
-    category: 'Tea & Coolers',
-    pronunciation: 'MAHT-chuh TAH-nik',
-    tagline: 'Ceremonial Uji matcha, Japanese yuzu citrus, sparkling tonic',
-    price: '₹310',
-    dietary: ['Vegan', 'Gluten-Free'],
-    caffeine: 'Medium',
-    image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Ceremonial Grade Matcha', 'Yuzu Extract', 'Artisanal Tonic Water', 'Mint'],
+    id: 'filter-coffee',
+    name: 'Signature Filter Coffee',
+    category: 'Hot Brew',
+    pronunciation: 'fil-ter KAH-fee',
+    tagline: 'Traditional South Indian chicory blend decoction frothed with boiled full-fat milk',
+    price: 'Included',
+    dietary: ['Vegetarian'],
+    caffeine: 'High',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Chicory & Coffee Blend Decoction', 'Boiled Full-cream Milk', 'Sugar'],
     isUnfamiliar: true,
-    briefDesc: 'Earthy, grassy Japanese green tea layered over bubbly crisp citrus. High in L-Theanine for calm focus without jitter.',
+    briefDesc: 'Brewed using a traditional brass drip filter. Frother-poured (metre coffee style) to create a thick bubbly head.'
   },
   {
-    id: 'cascara-fizz',
-    name: 'Cascara Sparkling Elixir',
-    category: 'Tea & Coolers',
-    pronunciation: 'kas-KAH-ruh',
-    tagline: 'Brewed sun-dried coffee cherry husk with blood orange & soda',
-    price: '₹260',
-    dietary: ['Vegan', 'Gluten-Free'],
-    caffeine: 'Low',
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Sun-dried Coffee Husks', 'Sparkling Mineral Water', 'Blood Orange Essence'],
-    isUnfamiliar: true,
-    briefDesc: 'Made from the fruit pulp surrounding coffee beans. Tastes like hibiscus, rosehip, and tamarind rather than coffee!',
-  },
-  {
-    id: 'gesha-pourover',
-    name: 'Panama Gesha Pour-Over',
-    category: 'Coffee',
-    pronunciation: 'GAY-shuh',
-    tagline: 'World-renowned rare floral varietal hand-dripped on V60',
-    price: '₹420',
+    id: 'americano-espresso',
+    name: 'Americano / Espresso',
+    menuDisplayName: 'Amerciano/ Expresso',
+    category: 'Hot Brew',
+    pronunciation: 'uh-mer-i-KAH-noh / es-PRES-oh',
+    tagline: 'Pure intense espresso shot or diluted with hot water for a smooth black coffee',
+    price: 'Included',
     dietary: ['Vegan', 'Gluten-Free', 'Zero Sugar'],
     caffeine: 'High',
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['100% Arabica Gesha Beans', 'Pure 93°C Mineral Water'],
+    image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Double Shot Arabica Espresso', 'Optional Hot Filtered Water'],
     isUnfamiliar: true,
-    briefDesc: 'The "Champagne of coffees". Delicate tea-like body with intense jasmine, bergamot, and peach notes.',
+    briefDesc: 'Espresso is 9-bar pressure extracted pure coffee essence; Americano adds hot water to achieve drip-coffee strength.'
   },
   {
-    id: 'kouign-amann',
-    name: 'Kouign-Amann',
-    category: 'Bakery & Bites',
-    pronunciation: 'queen ah-MAHN',
-    tagline: 'Breton caramelized butter cake with shattered crisp layers',
-    price: '₹220',
+    id: 'masala-chai-latte',
+    name: 'Masala Chai Latte',
+    category: 'Hot Brew',
+    pronunciation: 'muh-SAH-luh CHAI LAH-tay',
+    tagline: 'Robust Assam black tea simmered with crushed ginger, cardamom, clove, and steamed milk',
+    price: 'Included',
     dietary: ['Vegetarian'],
-    caffeine: 'Zero',
-    image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Laminated Dough', 'French Salted Butter', 'Slow-Caramelized Sugar Crust'],
-    isUnfamiliar: true,
-    briefDesc: 'A layered pastry originating from Brittany, France. Like a croissant turned inside out with a crunchy, brittle caramel glaze.',
-  },
-  {
-    id: 'cruffin-pistachio',
-    name: 'Pistachio Kunafa Cruffin',
-    category: 'Bakery & Bites',
-    pronunciation: 'KROO-fin',
-    tagline: 'Croissant baked in muffin mold, filled with roasted pistachio cream',
-    price: '₹260',
-    dietary: ['Vegetarian'],
-    caffeine: 'Zero',
-    image: 'https://images.unsplash.com/photo-1621236378699-8597fab6a1c8?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Flaky Croissant Dough', 'Bronte Pistachio Praline Paste', 'Kataifi Pastry'],
-    isUnfamiliar: true,
-    briefDesc: 'Muffin-shaped croissant with endless buttery flaky layers filled with rich, nutty pistachio custard.',
-  },
-  {
-    id: 'flat-white',
-    name: 'Flat White',
-    category: 'Coffee',
-    pronunciation: 'flat white',
-    tagline: 'Double espresso topped with micro-foamed milk',
-    price: '₹230',
-    dietary: ['Vegetarian'],
-    caffeine: 'High',
-    image: 'https://images.unsplash.com/photo-1577968897966-3d4325b36b61?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Espresso', 'Silky Microfoam Milk'],
+    caffeine: 'Medium',
+    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Assam CTC Tea', 'Fresh Ginger', 'Cardamom & Cloves', 'Steamed Milk'],
     isUnfamiliar: false,
-    briefDesc: 'Australasian specialty staple with stronger espresso-to-milk ratio than a latte and ultra-fine glossy microfoam.',
+    briefDesc: 'Warm, deeply aromatic Indian spiced tea elevated with smooth modern latte microfoam.'
+  },
+
+  // --- COLD BREW ---
+  {
+    id: 'classic-cold-coffee',
+    name: 'Classic Cold Coffee',
+    category: 'Cold Brew',
+    pronunciation: 'classic cold coffee',
+    tagline: 'Chilled espresso blended with milk, ice, and smooth vanilla sweetness',
+    price: 'Included',
+    dietary: ['Vegetarian'],
+    caffeine: 'Medium',
+    image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Double Espresso', 'Chilled Milk', 'Cane Sugar', 'Crushed Ice'],
+    isUnfamiliar: false,
+    briefDesc: 'Sweet, creamy, and instantly refreshing coffee milkshake-style refresher.'
+  },
+  {
+    id: 'classic-cold-brew',
+    name: 'Classic Cold Brew',
+    category: 'Cold Brew',
+    pronunciation: 'classic cold brew',
+    tagline: 'Coarse coffee grounds steeped in cold mineral water for 16 hours for ultra-smooth low-acid sip',
+    price: 'Included',
+    dietary: ['Vegan', 'Gluten-Free', 'Zero Sugar'],
+    caffeine: 'High',
+    image: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['16-hour Slow Steeped Coffee', 'Filtered Ice Water'],
+    isUnfamiliar: true,
+    briefDesc: 'Never touches hot water. Naturally chocolatey, zero bitterness, 65% less acidic than hot coffee with high sustained energy.'
+  },
+  {
+    id: 'classic-lemonade',
+    name: 'Classic Lemonade',
+    category: 'Cold Brew',
+    pronunciation: 'classic lem-uh-NEYD',
+    tagline: 'Fresh squeezed sun lemons, sparkling water, mint leaves, and a dash of rock salt',
+    price: 'Included',
+    dietary: ['Vegan', 'Gluten-Free'],
+    caffeine: 'Zero',
+    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Fresh Lemon Juice', 'Sparkling Mineral Water', 'Mint Sprig', 'Rock Salt & Cane Syrup'],
+    isUnfamiliar: false,
+    briefDesc: 'Crisp, thirst-quenching citrus burst to reset your palate between hackathon sprints.'
+  },
+
+  // --- SANDWICH ---
+  {
+    id: 'paneer-tikka-sandwich',
+    name: 'Paneer Tikka Sandwich',
+    category: 'Sandwich',
+    pronunciation: 'puh-NEER TIK-kuh sandwich',
+    tagline: 'Tandoor-charred spiced cottage cheese cubes layered with mint coriander chutney and crunchy peppers',
+    price: 'Included',
+    dietary: ['Vegetarian'],
+    caffeine: 'Zero',
+    image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Marinated Paneer', 'Capsicum & Onions', 'Mint-Coriander Chutney', 'Grilled Butter Bread'],
+    isUnfamiliar: true,
+    briefDesc: 'A beloved Indian street-style gourmet toastie. Paneer marinated in curd, cumin, and garam masala griddled to golden perfection.'
+  },
+  {
+    id: 'tandoori-chicken-sandwich',
+    name: 'Tandoori Chicken Sandwich',
+    category: 'Sandwich',
+    pronunciation: 'tahn-DOO-ree chicken sandwich',
+    tagline: 'Smoky spiced chicken breast shreds, pickled onions, and tandoori emulsion in grilled bread',
+    price: 'Included',
+    dietary: ['Non-Vegetarian', 'Halal'],
+    caffeine: 'Zero',
+    image: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Tandoori Roast Chicken', 'Pickled Red Onions', 'Spiced Garlic Mayo', 'Toasted Bread'],
+    isUnfamiliar: true,
+    briefDesc: 'Packed with protein and rich tandoori spices. Smokiness balanced by crisp tangy onions.'
+  },
+
+  // --- PANCAKE ---
+  {
+    id: 'classic-pancake',
+    name: 'Classic Pancakes',
+    menuDisplayName: 'Calssic pan cake',
+    category: 'Pancake',
+    pronunciation: 'KLAS-ik pan-keyk',
+    tagline: 'Stack of fluffy, golden-griddled buttermilk pancakes with salted dairy butter and warm syrup',
+    price: 'Included',
+    dietary: ['Vegetarian'],
+    caffeine: 'Zero',
+    image: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Buttermilk Batter', 'Farm Butter', 'Maple Syrup', 'Vanilla'],
+    isUnfamiliar: false,
+    briefDesc: 'Light, airy, pillow-soft pancakes freshly griddled. Sweet companion for black coffee.'
+  },
+
+  // --- SHAREABLE BITES ---
+  {
+    id: 'chilli-cheese-garlic-toast',
+    name: 'Chilli Cheese Garlic Toast',
+    menuDisplayName: 'Chilly cheese galric toast (Veg)',
+    category: 'Shareable Bites',
+    pronunciation: 'chil-ee cheez gar-lik tohst',
+    tagline: 'Crusty toasted bread slathered in garlic butter, smothered with melted mozzarella & green chillies',
+    price: 'Included',
+    dietary: ['Vegetarian'],
+    caffeine: 'Zero',
+    image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Crusty French Loaf', 'Garlic Herb Butter', 'Mozzarella & Cheddar', 'Chopped Green Birds-Eye Chillies'],
+    isUnfamiliar: true,
+    briefDesc: 'The ultimate savory café sharing bite. Gooey bubbly cheese cut through by sharp garlic and green chilli heat.'
+  },
+  {
+    id: 'chicken-cheese-toasties',
+    name: 'Chicken & Cheese Toasties',
+    menuDisplayName: 'Chciken & Cheese toasties',
+    category: 'Shareable Bites',
+    pronunciation: 'chik-in and cheez tohs-tees',
+    tagline: 'Golden griddled toast pockets bursting with seasoned chicken chunks and oozing cheddar cheese',
+    price: 'Included',
+    dietary: ['Non-Vegetarian', 'Halal'],
+    caffeine: 'Zero',
+    image: 'https://images.unsplash.com/photo-1528736235302-52922df5c122?w=800&auto=format&fit=crop&q=80',
+    baseIngredients: ['Slow-cooked Seasoned Chicken', 'Sharp Cheddar Cheese', 'Herb Butter', 'Crispy Golden Toast'],
+    isUnfamiliar: true,
+    briefDesc: 'Comfort food perfection. Hot, crunchy bread holding succulent savory chicken and molten cheese.'
   }
 ];
