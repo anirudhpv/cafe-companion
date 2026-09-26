@@ -1,7 +1,7 @@
 export interface MenuItem {
   id: string;
   name: string;
-  menuDisplayName?: string; // Preserve exact text from cafe menu board
+  menuDisplayName?: string;
   category: 'Hot Brew' | 'Cold Brew' | 'Sandwich' | 'Pancake' | 'Shareable Bites';
   pronunciation?: string;
   tagline: string;
@@ -12,6 +12,13 @@ export interface MenuItem {
   baseIngredients: string[];
   isUnfamiliar: boolean;
   briefDesc: string;
+  origin: string;
+  flavorProfile: {
+    intensity: string;
+    sweetness: string;
+    acidity: string;
+    texture: string;
+  };
 }
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -21,28 +28,42 @@ export const MENU_ITEMS: MenuItem[] = [
     name: 'Cappuccino',
     category: 'Hot Brew',
     pronunciation: 'kap-oo-CHEE-noh',
-    tagline: 'Classic Italian espresso topped with equal parts steamed milk & dense velvety foam',
-    price: 'Included',
+    tagline: 'Equal parts espresso, steamed milk, and dense microfoam.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'High',
     image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Espresso (1/3)', 'Steamed Milk (1/3)', 'Milk Foam (1/3)'],
+    baseIngredients: ['Espresso (1/3)', 'Steamed Whole Milk (1/3)', 'Dense Aerated Foam (1/3)'],
     isUnfamiliar: false,
-    briefDesc: 'Rich, comforting classic with a thick aerated milk foam layer dusting the top.'
+    briefDesc: 'Balanced Italian staple. Hot milk sweetens the dark roast while a thick layer of velvet foam retains aroma.',
+    origin: 'Italy (1930s)',
+    flavorProfile: {
+      intensity: '3/5',
+      sweetness: '2/5',
+      acidity: '2/5',
+      texture: 'Velvety foam cap'
+    }
   },
   {
     id: 'filter-coffee',
     name: 'Signature Filter Coffee',
     category: 'Hot Brew',
-    pronunciation: 'fil-ter KAH-fee',
-    tagline: 'Traditional South Indian chicory blend decoction frothed with boiled full-fat milk',
-    price: 'Included',
+    pronunciation: 'fil-tər KAH-fee',
+    tagline: 'South Indian chicory-roasted blend brewed in a traditional brass drip tumbler.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'High',
     image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Chicory & Coffee Blend Decoction', 'Boiled Full-cream Milk', 'Sugar'],
+    baseIngredients: ['Dark Roast Arabica / Robusta (80%)', 'Chicory Root (20%)', 'Boiled Whole Milk', 'Unrefined Sugar'],
     isUnfamiliar: true,
-    briefDesc: 'Brewed using a traditional brass drip filter. Frother-poured (metre coffee style) to create a thick bubbly head.'
+    briefDesc: 'Thick, fragrant decoction slow-dripped through a stainless/brass percolation filter, then aerated by pouring between dabara and tumbler.',
+    origin: 'Southern India (Tamil Nadu / Karnataka)',
+    flavorProfile: {
+      intensity: '5/5',
+      sweetness: '3/5',
+      acidity: '1/5',
+      texture: 'Frothy, full-bodied, heavy'
+    }
   },
   {
     id: 'americano-espresso',
@@ -50,28 +71,42 @@ export const MENU_ITEMS: MenuItem[] = [
     menuDisplayName: 'Amerciano/ Expresso',
     category: 'Hot Brew',
     pronunciation: 'uh-mer-i-KAH-noh / es-PRES-oh',
-    tagline: 'Pure intense espresso shot or diluted with hot water for a smooth black coffee',
-    price: 'Included',
+    tagline: 'Pure 9-bar pressure extraction or diluted with near-boiling water.',
+    price: 'Complimentary',
     dietary: ['Vegan', 'Gluten-Free', 'Zero Sugar'],
     caffeine: 'High',
     image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Double Shot Arabica Espresso', 'Optional Hot Filtered Water'],
+    baseIngredients: ['Double Shot Arabica Espresso (36g yield)', 'Hot Filtered Water (optional, 120ml)'],
     isUnfamiliar: true,
-    briefDesc: 'Espresso is 9-bar pressure extracted pure coffee essence; Americano adds hot water to achieve drip-coffee strength.'
+    briefDesc: 'Espresso delivers concentrated crema and roasted notes. Americano dilutes the body to drip-coffee viscosity without losing bean origin notes.',
+    origin: 'Italy / WWII soldiers in Europe',
+    flavorProfile: {
+      intensity: '5/5',
+      sweetness: '1/5',
+      acidity: '3/5',
+      texture: 'Clean, light viscosity'
+    }
   },
   {
     id: 'masala-chai-latte',
     name: 'Masala Chai Latte',
     category: 'Hot Brew',
     pronunciation: 'muh-SAH-luh CHAI LAH-tay',
-    tagline: 'Robust Assam black tea simmered with crushed ginger, cardamom, clove, and steamed milk',
-    price: 'Included',
+    tagline: 'Estate Assam black tea simmered with fresh ginger, crushed pods, and milk foam.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'Medium',
     image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Assam CTC Tea', 'Fresh Ginger', 'Cardamom & Cloves', 'Steamed Milk'],
+    baseIngredients: ['CTC Assam Black Tea', 'Crushed Green Cardamom', 'Fresh Ginger Root', 'Cloves & Cinnamon', 'Steamed Milk'],
     isUnfamiliar: false,
-    briefDesc: 'Warm, deeply aromatic Indian spiced tea elevated with smooth modern latte microfoam.'
+    briefDesc: 'Spiced aromatic tea decoction integrated with cafe-style milk microfoam.',
+    origin: 'Indian subcontinent',
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '3/5',
+      acidity: '1/5',
+      texture: 'Aromatic, warm, silky'
+    }
   },
 
   // --- COLD BREW ---
@@ -80,42 +115,63 @@ export const MENU_ITEMS: MenuItem[] = [
     name: 'Classic Cold Coffee',
     category: 'Cold Brew',
     pronunciation: 'classic cold coffee',
-    tagline: 'Chilled espresso blended with milk, ice, and smooth vanilla sweetness',
-    price: 'Included',
+    tagline: 'Double espresso pulled over chilled milk, light cane syrup, and crushed ice.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'Medium',
     image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Double Espresso', 'Chilled Milk', 'Cane Sugar', 'Crushed Ice'],
+    baseIngredients: ['Chilled Double Shot Espresso', 'Fresh Whole Milk', 'Cane Sugar Syrup', 'Ice'],
     isUnfamiliar: false,
-    briefDesc: 'Sweet, creamy, and instantly refreshing coffee milkshake-style refresher.'
+    briefDesc: 'The quintessential Indian cafe cold beverage. Frothy, sweet, and cooling.',
+    origin: 'Modern cafe staple',
+    flavorProfile: {
+      intensity: '3/5',
+      sweetness: '4/5',
+      acidity: '1/5',
+      texture: 'Creamy, chilled, rich'
+    }
   },
   {
     id: 'classic-cold-brew',
     name: 'Classic Cold Brew',
     category: 'Cold Brew',
     pronunciation: 'classic cold brew',
-    tagline: 'Coarse coffee grounds steeped in cold mineral water for 16 hours for ultra-smooth low-acid sip',
-    price: 'Included',
+    tagline: 'Single-origin coarse coffee steeped in cold water for 16 hours.',
+    price: 'Complimentary',
     dietary: ['Vegan', 'Gluten-Free', 'Zero Sugar'],
     caffeine: 'High',
     image: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['16-hour Slow Steeped Coffee', 'Filtered Ice Water'],
+    baseIngredients: ['100% Arabica Coarse Grind', 'Cold Filtered Mineral Water (16h steep)', 'Ice'],
     isUnfamiliar: true,
-    briefDesc: 'Never touches hot water. Naturally chocolatey, zero bitterness, 65% less acidic than hot coffee with high sustained energy.'
+    briefDesc: 'Cold water extraction bypasses heat-soluble bitter oils, yielding high caffeine, natural chocolate/fruit notes, and 65% lower perceived acidity.',
+    origin: 'Kyoto, Japan / Modern third-wave roasters',
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '2/5',
+      acidity: '1/5',
+      texture: 'Clean, crisp, zero astringency'
+    }
   },
   {
     id: 'classic-lemonade',
     name: 'Classic Lemonade',
     category: 'Cold Brew',
     pronunciation: 'classic lem-uh-NEYD',
-    tagline: 'Fresh squeezed sun lemons, sparkling water, mint leaves, and a dash of rock salt',
-    price: 'Included',
+    tagline: 'Freshly squeezed lemon juice, sparkling soda water, and mint.',
+    price: 'Complimentary',
     dietary: ['Vegan', 'Gluten-Free'],
     caffeine: 'Zero',
     image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Fresh Lemon Juice', 'Sparkling Mineral Water', 'Mint Sprig', 'Rock Salt & Cane Syrup'],
+    baseIngredients: ['Fresh Lime / Lemon Extract', 'Chilled Sparkling Water', 'Fresh Spearmint', 'Pinch of Black Salt & Simple Syrup'],
     isUnfamiliar: false,
-    briefDesc: 'Crisp, thirst-quenching citrus burst to reset your palate between hackathon sprints.'
+    briefDesc: 'Tart, effervescent palate cleanser with light herbal aromatic notes.',
+    origin: 'Classic cooler',
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '2/5',
+      acidity: '5/5',
+      texture: 'Effervescent, sparkling, crisp'
+    }
   },
 
   // --- SANDWICH ---
@@ -124,28 +180,42 @@ export const MENU_ITEMS: MenuItem[] = [
     name: 'Paneer Tikka Sandwich',
     category: 'Sandwich',
     pronunciation: 'puh-NEER TIK-kuh sandwich',
-    tagline: 'Tandoor-charred spiced cottage cheese cubes layered with mint coriander chutney and crunchy peppers',
-    price: 'Included',
+    tagline: 'Spiced cottage cheese cubes in yogurt marinade, grilled on white/brown bread.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'Zero',
     image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Marinated Paneer', 'Capsicum & Onions', 'Mint-Coriander Chutney', 'Grilled Butter Bread'],
+    baseIngredients: ['Charred Malai Paneer', 'Green Capsicum & Sliced Red Onion', 'Mint-Coriander Chutney', 'Chaat Masala', 'Toasted Butter Bread'],
     isUnfamiliar: true,
-    briefDesc: 'A beloved Indian street-style gourmet toastie. Paneer marinated in curd, cumin, and garam masala griddled to golden perfection.'
+    briefDesc: 'Tandoori-spiced paneer chunks griddled between sliced bread with sharp green herb chutney.',
+    origin: 'Northern India',
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '1/5',
+      acidity: '3/5',
+      texture: 'Crusty exterior, soft spiced paneer interior'
+    }
   },
   {
     id: 'tandoori-chicken-sandwich',
     name: 'Tandoori Chicken Sandwich',
     category: 'Sandwich',
     pronunciation: 'tahn-DOO-ree chicken sandwich',
-    tagline: 'Smoky spiced chicken breast shreds, pickled onions, and tandoori emulsion in grilled bread',
-    price: 'Included',
+    tagline: 'Roasted shredded chicken breast in tandoori marinade with spiced mayo.',
+    price: 'Complimentary',
     dietary: ['Non-Vegetarian', 'Halal'],
     caffeine: 'Zero',
     image: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Tandoori Roast Chicken', 'Pickled Red Onions', 'Spiced Garlic Mayo', 'Toasted Bread'],
+    baseIngredients: ['Shredded Roast Chicken', 'Kashmiri Chilli & Yogurt Rub', 'Pickled Red Onions', 'Herb Mayo', 'Crisp Toasted Bread'],
     isUnfamiliar: true,
-    briefDesc: 'Packed with protein and rich tandoori spices. Smokiness balanced by crisp tangy onions.'
+    briefDesc: 'Savory protein sandwich featuring roasted spiced chicken balanced with cool tangy onions and crusty bread.',
+    origin: 'Punjab / Indian deli modern',
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '1/5',
+      acidity: '2/5',
+      texture: 'Tender chicken, crunchy crust'
+    }
   },
 
   // --- PANCAKE ---
@@ -155,14 +225,21 @@ export const MENU_ITEMS: MenuItem[] = [
     menuDisplayName: 'Calssic pan cake',
     category: 'Pancake',
     pronunciation: 'KLAS-ik pan-keyk',
-    tagline: 'Stack of fluffy, golden-griddled buttermilk pancakes with salted dairy butter and warm syrup',
-    price: 'Included',
+    tagline: 'Stack of griddled buttermilk batter rounds served with salted butter and syrup.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'Zero',
     image: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Buttermilk Batter', 'Farm Butter', 'Maple Syrup', 'Vanilla'],
+    baseIngredients: ['Flour & Cultured Buttermilk', 'Farm Butter', 'Maple / Cane Syrup', 'Pure Vanilla'],
     isUnfamiliar: false,
-    briefDesc: 'Light, airy, pillow-soft pancakes freshly griddled. Sweet companion for black coffee.'
+    briefDesc: 'Golden griddled discs with tender crumb and aerated structure.',
+    origin: 'North America / European tradition',
+    flavorProfile: {
+      intensity: '2/5',
+      sweetness: '4/5',
+      acidity: '1/5',
+      texture: 'Pillow-soft, airy, tender'
+    }
   },
 
   // --- SHAREABLE BITES ---
@@ -172,14 +249,21 @@ export const MENU_ITEMS: MenuItem[] = [
     menuDisplayName: 'Chilly cheese galric toast (Veg)',
     category: 'Shareable Bites',
     pronunciation: 'chil-ee cheez gar-lik tohst',
-    tagline: 'Crusty toasted bread slathered in garlic butter, smothered with melted mozzarella & green chillies',
-    price: 'Included',
+    tagline: 'Crusty loaf smothered in roasted garlic butter, melted mozzarella, and green bird-eye chillies.',
+    price: 'Complimentary',
     dietary: ['Vegetarian'],
     caffeine: 'Zero',
     image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Crusty French Loaf', 'Garlic Herb Butter', 'Mozzarella & Cheddar', 'Chopped Green Birds-Eye Chillies'],
+    baseIngredients: ['French Loaf Baguette Slices', 'Minced Garlic Herb Butter', 'Shredded Mozzarella & Processed Cheese', 'Fresh Green Chillies'],
     isUnfamiliar: true,
-    briefDesc: 'The ultimate savory café sharing bite. Gooey bubbly cheese cut through by sharp garlic and green chilli heat.'
+    briefDesc: 'Sharp pungency of fresh garlic and green chillies baked under a bubbling layer of salted cheese on crusty toast.',
+    origin: 'Indian club / cafe classic',
+    flavorProfile: {
+      intensity: '4/5',
+      sweetness: '1/5',
+      acidity: '1/5',
+      texture: 'Crunchy bread, molten melted cheese'
+    }
   },
   {
     id: 'chicken-cheese-toasties',
@@ -187,13 +271,20 @@ export const MENU_ITEMS: MenuItem[] = [
     menuDisplayName: 'Chciken & Cheese toasties',
     category: 'Shareable Bites',
     pronunciation: 'chik-in and cheez tohs-tees',
-    tagline: 'Golden griddled toast pockets bursting with seasoned chicken chunks and oozing cheddar cheese',
-    price: 'Included',
+    tagline: 'Pressed toast pockets stuffed with seasoned chicken chunks and sharp cheddar.',
+    price: 'Complimentary',
     dietary: ['Non-Vegetarian', 'Halal'],
     caffeine: 'Zero',
     image: 'https://images.unsplash.com/photo-1528736235302-52922df5c122?w=800&auto=format&fit=crop&q=80',
-    baseIngredients: ['Slow-cooked Seasoned Chicken', 'Sharp Cheddar Cheese', 'Herb Butter', 'Crispy Golden Toast'],
+    baseIngredients: ['Cooked Seasoned Chicken Breast', 'Aged Cheddar / Mozzarella', 'Black Pepper & Thyme', 'Golden Griddled Bread'],
     isUnfamiliar: true,
-    briefDesc: 'Comfort food perfection. Hot, crunchy bread holding succulent savory chicken and molten cheese.'
+    briefDesc: 'Comforting pressed sandwich cut diagonally with savory chicken and molten cheese filling.',
+    origin: 'British / Commonwealth toastie culture',
+    flavorProfile: {
+      intensity: '3/5',
+      sweetness: '1/5',
+      acidity: '1/5',
+      texture: 'Crisp pressed crust, rich melted interior'
+    }
   }
 ];

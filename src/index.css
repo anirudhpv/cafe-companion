@@ -4,26 +4,26 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F8F9FA;
-    color: #1F2937;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #FAFAFA;
+    color: #18181B;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.011em;
   }
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(229, 231, 235, 0.7);
+/* Swiss / Editorial utility classes */
+.border-subtle {
+  border-color: #E4E4E7;
 }
 
-.google-gradient {
-  background: linear-gradient(135deg, #4285F4 0%, #34A853 50%, #FBBC05 75%, #EA4335 100%);
+.bg-panel {
+  background-color: #FFFFFF;
 }
 
-.text-google-gradient {
-  background: linear-gradient(135deg, #1A73E8 0%, #0D652D 50%, #E37400 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.mono-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }

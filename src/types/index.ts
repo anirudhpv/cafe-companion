@@ -12,6 +12,13 @@ export interface MenuItem {
   baseIngredients: string[];
   isUnfamiliar: boolean;
   briefDesc: string;
+  origin: string;
+  flavorProfile: {
+    intensity: string;
+    sweetness: string;
+    acidity: string;
+    texture: string;
+  };
 }
 
 export interface ItemExplanation {
